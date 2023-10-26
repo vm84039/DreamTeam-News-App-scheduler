@@ -1,0 +1,35 @@
+name: Deploy Spring Boot App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11' # or the Java version you are using
+
+      - name: Build and package
+        run: ./mvnw clean package -DskipTests
+
+  deploy:
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - name: Deploy to Azure (example)
+        run: |
+          # Add your deployment commands here
+          # For example, deploy to Azure Web App:
+           az webapp up --name DreamTeam-NewsApp --sku Free --resource-group DreamTeam-NewsApp_group
+        env:
+          AZURE_WEBAPP_NAME: DreamTeam-NewsApp
+          AZURE_RESOURCE_GROUP: DreamTeam-NewsApp_group
+        # You might need to set additional environment variables for authentication, connection strings, etc.
