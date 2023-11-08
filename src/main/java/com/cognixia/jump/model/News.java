@@ -45,6 +45,10 @@ public class News {
 	private String pubDate;
 	private String source_id;
 	private String country = "us";
+	private String imageUrl;
+	private String videoUrl;
+	private String creator;
+	
 	
 	@Enumerated(EnumType.STRING) 
 	private Category category;
@@ -138,6 +142,31 @@ public class News {
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+	
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public String getVideoUrl() {
+		return videoUrl;
+	}
+
+	public void setVideoUrl(String videoUrl) {
+		this.videoUrl = videoUrl;
+	}
+
+	public String getCreator() {
+		return creator;
+	}
+
+	public void setCreator(String creator) {
+		this.creator = creator;
 	}
 
 	@Override

@@ -71,6 +71,16 @@ public class NewsApiService {
 								keywordsBuilder.setLength(500);
 							}
 						}
+	                    String[] creators = null;
+	                    if (newsNode.has("creator") && newsNode.get("creator").isArray()) {
+	                        List<String> creatorList = new ArrayList<>();
+	                        for (JsonNode creatorNode : newsNode.get("creator")) {
+	                            creatorList.add(creatorNode.asText());
+	                        }
+	                        creators = creatorList.toArray(new String[0]);
+	                    }
+				        String imageUrl = newsNode.has("image_url") ? newsNode.get("image_url").asText() : null;
+		                String videoUrl = newsNode.has("video_url") ? newsNode.get("video_url").asText() : null;
 
 						String title = newsNode.get("title").asText();
 
@@ -87,6 +97,10 @@ public class NewsApiService {
 							news.setSource_id(newsNode.get("source_id").asText());
 							news.setKeyword(keywordsBuilder.toString());
 							news.setCategory(category);
+	                        news.setCreator(creators[0]); // Set creators
+	                        news.setImageUrl(imageUrl); // Set image URL
+	                        news.setVideoUrl(videoUrl); // Set video URL
+
 
 							System.out.println(news.toString());
 				            // Check conditions before saving to the database
