@@ -58,7 +58,7 @@ public class NewsApiService {
 
 						StringBuilder keywordsBuilder = new StringBuilder();
 						JsonNode keywordsNode = newsNode.get("keywords");
-						System.out.println(keywordsNode);
+						// System.out.println(keywordsNode);
 						if (keywordsNode != null && keywordsNode.isArray()) {
 							for (JsonNode keywordNode : keywordsNode) {
 								keywordsBuilder.append(keywordNode.asText()).append(",");
@@ -71,17 +71,15 @@ public class NewsApiService {
 								keywordsBuilder.setLength(500);
 							}
 						}
-	                    String[] creators = null;
-	                    if (newsNode.has("creator") && newsNode.get("creator").isArray()) {
-	                        List<String> creatorList = new ArrayList<>();
-	                        for (JsonNode creatorNode : newsNode.get("creator")) {
-	                            creatorList.add(creatorNode.asText());
-	                        }
-	                        creators = creatorList.toArray(new String[0]);
-	                    }
-				        String imageUrl = newsNode.has("image_url") ? newsNode.get("image_url").asText() : null;
-		                String videoUrl = newsNode.has("video_url") ? newsNode.get("video_url").asText() : null;
-
+						String[] creators = null;
+						if (newsNode.has("creator") && newsNode.get("creator").isArray()) {
+							List<String> creatorList = new ArrayList<>();
+							for (JsonNode creatorNode : newsNode.get("creator")) {
+								creatorList.add(creatorNode.asText());
+							}
+							creators = creatorList.toArray(new String[0]);
+						}
+						String creatorsString = creators != null ? creators[0] : "";
 						String title = newsNode.get("title").asText();
 
 						// Check if a news article with the same title already exists
@@ -97,16 +95,15 @@ public class NewsApiService {
 							news.setSource_id(newsNode.get("source_id").asText());
 							news.setKeyword(keywordsBuilder.toString());
 							news.setCategory(category);
-	                        news.setCreator(creators[0]); // Set creators
-	                        news.setImageUrl(imageUrl); // Set image URL
-	                        news.setVideoUrl(videoUrl); // Set video URL
-
-
-							System.out.println(news.toString());
-				            // Check conditions before saving to the database
-				            if (title != null && content != null && !hasDuplicatePrefix(content, 20)) {
-				                repo.save(news);
-				            }
+							news.setCreator(creatorsString); // Set creators
+							news.setImageUrl(newsNode.get("image_url").asText()); // Set image URL
+							news.setVideoUrl(newsNode.get("video_url").asText()); // Set video URL
+							System.out.println("Creator:" + news.getCreator() + " Image:" + news.getImageUrl()
+									+ " Video:" + news.getVideoUrl());
+							// Check conditions before saving to the database
+							if (title != null && content != null && !hasDuplicatePrefix(content, 20)) {
+								repo.save(news);
+							}
 						}
 					}
 				}
@@ -121,23 +118,26 @@ public class NewsApiService {
 			e.printStackTrace(); // You should handle or log the exception properly
 		}
 	}
-    private boolean hasDuplicatePrefix(String content, int prefixLength) {
-        // Extract the prefix of the specified length from the content
-        String prefix = content.substring(0, Math.min(prefixLength, content.length()));
 
-        // Check if the prefix is already in the set
-        return duplicatePrefixes.contains(prefix);
-    }
+	private boolean hasDuplicatePrefix(String content, int prefixLength) {
+		// Extract the prefix of the specified length from the content
+		String prefix = content.substring(0, Math.min(prefixLength, content.length()));
 
-    private Set<String> duplicatePrefixes = new HashSet<>();
-    // Method to get the total number of entries in the database
-    public long getTotalEntries() {
-        return repo.count();
-    }
+		// Check if the prefix is already in the set
+		return duplicatePrefixes.contains(prefix);
+	}
 
-    // Method to delete the oldest entries to reduce the total number of entries to the specified limit
-    public void deleteOldestEntries(int entriesToDelete) {
-        List<News> oldestEntries = repo.findAllByOrderByPubDateAsc(PageRequest.of(0, entriesToDelete));
-        repo.deleteAll(oldestEntries);
-    }
+	private Set<String> duplicatePrefixes = new HashSet<>();
+
+	// Method to get the total number of entries in the database
+	public long getTotalEntries() {
+		return repo.count();
+	}
+
+	// Method to delete the oldest entries to reduce the total number of entries to
+	// the specified limit
+	public void deleteOldestEntries(int entriesToDelete) {
+		List<News> oldestEntries = repo.findAllByOrderByPubDateAsc(PageRequest.of(0, entriesToDelete));
+		repo.deleteAll(oldestEntries);
+	}
 }

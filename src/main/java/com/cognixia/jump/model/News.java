@@ -10,20 +10,20 @@ import jakarta.persistence.Id;
 
 @Entity
 public class News {
-	
+
 	public enum Category {
-	    BUSINESS,
-	    ENTERTAINMENT,
-	    ENVIRONMENT,
-	    FOOD,
-	    HEALTH,
-	    POLITICS,
-	    SCIENCE,
-	    SPORTS,
-	    TECHNOLOGY,
-	    TOP,
-	    TOURISM,
-	    WORLD
+		BUSINESS,
+		ENTERTAINMENT,
+		ENVIRONMENT,
+		FOOD,
+		HEALTH,
+		POLITICS,
+		SCIENCE,
+		SPORTS,
+		TECHNOLOGY,
+		TOP,
+		TOURISM,
+		WORLD
 	}
 
 	@Id
@@ -48,9 +48,8 @@ public class News {
 	private String imageUrl;
 	private String videoUrl;
 	private String creator;
-	
-	
-	@Enumerated(EnumType.STRING) 
+
+	@Enumerated(EnumType.STRING)
 	private Category category;
 
 	public News() {
@@ -143,7 +142,6 @@ public class News {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-	
 
 	public String getImageUrl() {
 		return imageUrl;
@@ -173,7 +171,9 @@ public class News {
 	public String toString() {
 		return "News [id=" + id + ", articleId=" + articleId + ", title=" + title + ", link=" + link + ", keyword="
 				+ keyword + ", description=" + description + ", content=" + content + ", pubDate=" + pubDate
-				+ ", source_id=" + source_id + ", country=" + country + ", category=" + category + "]";
+				+ ", source_id=" + source_id + ", country=" + country + ", imageUrl=" + imageUrl + ", videoUrl="
+				+ videoUrl + ", creator=" + creator + ", category=" + category + "]";
 	}
+	
 
 }
